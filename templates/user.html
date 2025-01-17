@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+    <style>
+        body{
+            font-size: 1rem;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+        }
+        form{
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+            background-color: #ffeecb;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        button{
+            cursor: pointer;
+            font-size:1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 5px;
+            margin: auto;
+        }
+        input[type="text"]{
+            border-radius: 5px;
+            border: 1px solid lightgrey;
+        }
+        .logout{
+            background-color:tomato
+        }
+        .logout:hover{
+            background-color: red;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            width: fit-content;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        table{
+            border-collapse: collapse;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+            border: 1px solid #e0e0e0;
+            border-radius:5px;
+        }
+        thead tr {
+            background-color: tomato;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        th,td {
+            padding: 6px 15px;
+        }
+        tbody tr {
+            border-bottom: 1px solid #dddddd;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:nth-of-type(even) {
+            background-color: #f1f1f1;
+        }
+        tbody tr:hover {
+            background-color: orange;
+            color: white;
+        }
+        tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+        .file-id{
+            background-color:#ff9800;
+        }
+        h2{
+            margin-bottom: 0px;
+        }
+        .back{
+            border:none;
+            background-color: rgb(235, 235, 235);
+            padding:4px;
+        }
+        .back:hover{
+            background-color: lightgray;
+        }
+
+    </style>
+    <script>
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' Bytes';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(2) + ' KB';
+            else if (bytes < 1073741824) return (bytes / 1048576).toFixed(2) + ' MB';
+            else return (bytes / 1073741824).toFixed(2) + ' GB';
+        }
+        
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('searchSentFiles').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const rows = document.querySelector('.sent table tbody').getElementsByTagName('tr');
+                
+                // Skip the last row (total row)
+                for (let i = 0; i < rows.length - 1; i++) {
+                    const filename = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+                    rows[i].style.display = filename.includes(searchTerm) ? '' : 'none';
+                }
+            });
+
+            document.getElementById('searchReceivedFiles').addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const rows = document.querySelector('.received table tbody').getElementsByTagName('tr');
+                
+                for (let i = 0; i < rows.length; i++) {
+                    const filename = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase(); // Changed index to 1
+                    rows[i].style.display = filename.includes(searchTerm) ? '' : 'none';
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <style>
+    label {
+      margin:8px 0px;
+      position:relative;
+      display:inline-block;
+    }
+      
+    span {
+      padding:7px;
+      pointer-events: none;
+      position:absolute;
+      left:0;
+      top:0;
+      transition: 0.05s;
+      transition-timing-function: ease;
+      transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+      opacity:0.7;
+    }
+    
+    input[type="text"], input[type="search"]{
+      padding:7px;
+      width: 90%;
+    }
+
+    input:focus + span, input:not(:placeholder-shown) + span {
+      opacity:1;
+      transform: scale(0.9) translateY(-85%) translateX(-10%);
+    }
+
+
+    </style>
+<style>
+     form button[type="submit"] {
+            font-weight:bold;
+            font-size:1.5rem;
+            width: 100%;
+            padding: 3px;
+            border: none;
+            background-color: orange;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.1s ease;
+
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+    
+    form button[type="submit"]:hover {
+        background-color: tomato;
+    }
+    form button[type="submit"]:active {
+        background-color: tomato;
+        box-shadow: none;
+    }
+    input::file-selector-button {
+        font-weight: bold;
+        padding: 0.5em;
+        border: none;
+        border-radius: 5px;
+        background-color: orange;
+        color: white;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+    input::file-selector-button:hover {
+        background-color: tomato;
+    }
+    input::file-selector-button:active {
+        background-color: tomato;
+        box-shadow: none;
+    }
+    .heading{
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family:proza;
+}
+.logo{
+    height: 60px;
+    width: 60px;
+    margin-right:auto
+}
+.nav{
+    width:97%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: rgb(255, 248, 208);
+    padding: 5px 20px;
+    position: relative;
+    margin-bottom: 15px;
+}
+.heading{
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.back{
+    margin: 0;
+}
+.logo{
+    height: 60px;
+    width: 60px;
+    margin-right: 5px;
+}
+.logout{
+    margin: 0;
+    /* transform: translateX(-15%); */
+}
+</style>
+        <nav class="nav">
+            <button class="back" onclick="window.location.href='/'">⬅️ Back</button>
+            <h1 class="heading" onclick="window.location.href='/'">
+                <img class="logo" src="/static/icon.png" alt="logo">Share Up
+            </h1>
+            <div class="profile">
+                🤵 Logged in as <b>{{ session.get('username') }}</b>
+                <button class="logout">
+                    <a href="{{ url_for('logout') }}" style="text-decoration: none; color: inherit;">Logout</a>
+                </button>
+            </div>
+        </nav>
+    
+    {% if message %}
+    <div class="message {{ message.type }}">
+        {{ message.text }}
+    </div>
+    {% endif %}
+
+    <form action="/user" method="POST" enctype="multipart/form-data" class="share">
+        <!-- <h2>Share a File</h2> -->
+        <!-- <div> -->
+            <label>
+                <input type="text" name="username" required placeholder=" ">
+                <span>Receiver's Username</span>
+            </label>
+        <!-- </div> -->
+        <!-- <div> -->
+            <!-- <label for="file">Select a File</label> -->
+            <input type="file" id="file" name="file" required><br>
+        <!-- </div> -->
+        <button type="submit">🚀 Share File</button>
+    </form>
+
+    <div class="received">
+        <div style="display: flex; justify-content: flex-start; align-items: center; gap: 10px;">
+            <h2>⬇️ Received Files</h2>
+            <input type="search" id="searchReceivedFiles" placeholder="Search by filename..." 
+                   style="width:fit-content; margin-top:auto; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">
+        
+            <select id="senderFilter" style="margin:0; position: relative; top:11px; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">
+                <option value="">All Senders</option>
+                {% for sender in files|map(attribute=1)|unique|sort %}
+                    <option value="{{ sender }}">{{ sender }}</option>
+                {% endfor %}
+            </select>
+            </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>🧑‍🦰 From</th>
+                    <th>✔️ Signature Verified</th>
+                    <th>⌚ Timestamp</th>
+                    <th>Size</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in files %}
+                <tr onclick="window.location.href='{{ url_for('download_file', file_id=file[0]) }}'">
+                    <td class="file-id">{{ file[0] }}</td>
+                    <td>{{ file[2] }}</td>
+                    <td>{{ file[1] }}</td>
+                    <td class="{{ 'verified' if file[6] else 'not-verified' }}">
+                        {{ 'Yes' if file[6] else 'No' }}
+                    </td>
+                    <td>{{ file[7].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td><script>document.write(formatFileSize({{ file[8] }}));</script></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="sent">
+        <div style="display: flex; justify-content: flex-start; align-items: center; gap: 10px;">
+            <h2>⬆️ Sent Files</h2>
+            <input type="search" id="searchSentFiles" placeholder="Search by filename..." 
+                   style="width:fit-content; margin-top:auto; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">
+        
+            <select id="receiverFilter" style="margin:0; position: relative; top:11px; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">
+                <option value="">All Recipients</option>
+                {% for receiver in sent_files|map(attribute=1)|unique|sort %}
+                    <option value="{{ receiver }}">{{ receiver }}</option>
+                {% endfor %}
+            </select>
+            </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>🧔 To</th>
+                    <th>✔️ Signature Verified</th>
+                    <th>⌚ Timestamp</th>
+                    <th>Size</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for file in sent_files %}
+                <tr onclick="window.location.href='{{ url_for('download_file', file_id=file[0]) }}'">
+                    <td class="file-id">{{ file[0] }}</td>
+                    <td>{{ file[2] }}</td>
+                    <td>{{ file[1] }}</td>
+                    <td class="{{ 'verified' if file[6] else 'not-verified' }}">
+                        {{ 'Yes' if file[6] else 'No' }}
+                    </td>
+                    <td>{{ file[7].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                    <td><script>document.write(formatFileSize({{ file[8] }}));</script></td>
+                </tr>
+                {% endfor %}
+                <tr style="font-weight: bold; background-color: #f0f0f0;">
+                    <td colspan="5" style="text-align: right;">Total:</td>
+                    <td><script>
+                        let total = {{ sent_files|map(attribute='8')|select('number')|list|sum }};
+                        document.write(formatFileSize(total || 0));
+                    </script></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to filter table rows
+            function filterTable(tableSelector, searchTerm, userFilter, userColumnIndex) {
+                const rows = document.querySelector(tableSelector + ' tbody').getElementsByTagName('tr');
+                const lastRow = tableSelector === '.sent table' ? rows.length - 1 : rows.length;
+
+                for (let i = 0; i < lastRow; i++) {
+                    const filename = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+                    const username = rows[i].getElementsByTagName('td')[userColumnIndex].textContent;
+                    
+                    const matchesSearch = filename.includes(searchTerm.toLowerCase());
+                    const matchesUser = !userFilter || username === userFilter;
+                    
+                    rows[i].style.display = (matchesSearch && matchesUser) ? '' : 'none';
+                }
+            }
+
+            // Event listeners for received files
+            const searchReceivedFiles = document.getElementById('searchReceivedFiles');
+            const senderFilter = document.getElementById('senderFilter');
+            
+            searchReceivedFiles.addEventListener('input', () => {
+                filterTable('.received table', searchReceivedFiles.value, senderFilter.value, 2);
+            });
+            
+            senderFilter.addEventListener('change', () => {
+                filterTable('.received table', searchReceivedFiles.value, senderFilter.value, 2);
+            });
+
+            // Event listeners for sent files
+            const searchSentFiles = document.getElementById('searchSentFiles');
+            const receiverFilter = document.getElementById('receiverFilter');
+            
+            searchSentFiles.addEventListener('input', () => {
+                filterTable('.sent table', searchSentFiles.value, receiverFilter.value, 2);
+            });
+            
+            receiverFilter.addEventListener('change', () => {
+                filterTable('.sent table', searchSentFiles.value, receiverFilter.value, 2);
+            });
+
+            // Make usernames clickable
+            document.querySelectorAll('.received table tbody tr, .sent table tbody tr').forEach(row => {
+                const usernameCell = row.getElementsByTagName('td')[2];
+                if (usernameCell) {
+                    usernameCell.style.cursor = 'pointer';
+                    usernameCell.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Prevent row click event
+                        const username = usernameCell.textContent;
+                        const isReceived = row.closest('.received') !== null;
+                        
+                        if (isReceived) {
+                            senderFilter.value = username;
+                            filterTable('.received table', searchReceivedFiles.value, username, 2);
+                        } else {
+                            receiverFilter.value = username;
+                            filterTable('.sent table', searchSentFiles.value, username, 2);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login / Sign Up</title>
+    <style>
+        body {
+            font-size: 1rem;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            /* background-color: lightgoldenrodyellow; */
+            background-color: #ffab0238;
+            border-radius: 10px;
+            padding: 20px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .forms-container {
+            position: relative;
+        }
+
+        .form-section {
+            transition: opacity 0.1s ease-in-out;
+        }
+
+        .form-section.hidden {
+            display: none;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        input {
+            border-radius: 10px;
+            font-size: 1.5rem;
+            /* padding: 7px; */
+            width: calc(100% - 20px);
+            border: 1px solid #ccc;
+        }
+
+        button {
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 8px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:active {
+            background-color: #3d8b40;
+        }
+
+        button:disabled {
+            background-color: #ccc; /* Light gray background */
+            color: #666; /* Darker gray text */
+            cursor: not-allowed; /* Change cursor to indicate disabled state */
+        }
+
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+
+        .toggle-form {
+            background: none;
+            border: none;
+            color: #0066cc;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 5px;
+        }
+
+        .toggle-form:hover {
+            color: #0052a3;
+            background: none;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    </style>
+    <script>
+        function toggleForms() {
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            loginForm.classList.toggle('hidden');
+            signupForm.classList.toggle('hidden');
+        }
+
+        function checkLoginFields() {
+            const username = document.querySelector('#login-form input[name="username"]');
+            const password = document.querySelector('#login-form input[name="password"]');
+            const loginButton = document.getElementById('login-button');
+            loginButton.disabled = !(username.value && password.value);
+        }
+
+        function checkSignupFields() {
+            const username = document.querySelector('#signup-form input[name="username"]');
+            const password1 = document.querySelector('#signup-form input[name="password1"]');
+            const password2 = document.querySelector('#signup-form input[name="password2"]');
+            const signupButton = document.getElementById('signup-button');
+            signupButton.disabled = !(username.value && password1.value && password2.value);
+        }
+    </script>
+</head>
+<body>
+    <style>
+            label {
+      margin:8px 0px;
+      position:relative;
+      display:inline-block;
+    }
+      
+    span {
+        font-size: 1.5rem;
+      padding:7px;
+      pointer-events: none;
+      position:absolute;
+      left:0;
+      top:0;
+      transition: 0.05s;
+      transition-timing-function: ease;
+      transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+      opacity:0.7;
+    }
+    
+    input {
+      padding:7px;
+    }
+    
+    input:focus + span, input:not(:placeholder-shown) + span {
+      opacity:1;
+      transform: scale(0.77) translateY(-90%) translateX(-16%);
+    }
+    
+    /* For IE Browsers*/
+    input:focus + span, input:not(:-ms-input-placeholder) + span {
+      opacity:1;
+      transform: scale(0.9) translateY(-80%) translateX(-15px);
+    }
+
+
+
+    form button[type="submit"] {
+            font-weight:bold;
+            font-size:1.5rem;
+            width: 100%;
+            padding: 8px;
+            border: none;
+            background-color: orange;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.1s ease;
+
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    }
+    
+    form button[type="submit"]:hover {
+        background-color: tomato;
+    }
+    form button[type="submit"]:active {
+        background-color: tomato;
+        box-shadow: none;
+    }
+
+.heading{
+    margin: 0;
+    margin-top: -9px;
+    margin-left: -9px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family:proza;
+}
+.logo{
+    height: 60px;
+    width: 60px;
+}
+    </style>
+
+
+    <div class="container">
+
+        <div class="forms-container">
+            <h1 class="heading"><img class="logo" src="/static/icon.png" alt="logo">Share Up</h1>
+            <!-- Login Form -->
+            <div id="login-form" class="form-section">
+                <form action="/login" method="POST" oninput="checkLoginFields()">
+                    <label>
+                        <input type="text" name="username" required placeholder=" ">
+                        <span>Username</span>
+                    </label>
+                    <label>
+                        <input type="password" name="password" required placeholder=" ">
+                        <span>Password</span>
+                    </label>
+                    <button type="submit" id="login-button" disabled>Login</button>
+                </form>
+                <button class="toggle-form" onclick="toggleForms()">Need an account? Sign up</button>
+            </div>
+
+            <!-- Signup Form -->
+            <div id="signup-form" class="form-section hidden">
+                <h2>Create Account</h2>
+                <form action="/signup" method="POST" oninput="checkSignupFields()">
+                    <label>
+                        <input type="text" name="username" required placeholder=" ">
+                        <span>Username</span>
+                    </label>
+                    <label>
+                        <input type="password" name="password1" required placeholder=" ">
+                        <span>Password</span>
+                    </label>
+                    <label>
+                        <input type="password" name="password2" required placeholder=" ">
+                        <span>Confirm Password</span>
+                    </label>
+                    <button type="submit" id="signup-button" disabled>Sign Up</button>
+                </form>
+                <button class="toggle-form" onclick="toggleForms()">Already have an account? Login</button>
+            </div>
+        </div>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="error-message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    
+</body>
+</html>

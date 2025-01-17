@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+    <style>
+        body {
+            font-size: 1rem;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: auto;
+        }
+        .nav {
+            width: 97%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            background-color: rgb(255, 248, 208);
+            padding: 5px 20px;
+            position: relative;
+            margin-bottom: 15px;
+        }
+        .heading {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            font-family:proza;
+
+        }
+        .logo {
+            height: 60px;
+            width: 60px;
+            margin-right: 5px;
+        }
+        form {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            width: fit-content;
+            background-color: #ffeecb;
+            padding: 10px;
+            border-radius: 10px;
+        }
+        form button[type="submit"] {
+            font-weight: bold;
+            font-size: 1.3rem;
+            width: 100%;
+            padding: 3px;
+            border: none;
+            background-color: orange;
+            color: white;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.1s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+        }
+        form button[type="submit"]:hover {
+            background-color: tomato;
+        }
+        form button[type="submit"]:active {
+            background-color: tomato;
+            box-shadow: none;
+        }
+        label {
+            margin: 8px 0px;
+            position: relative;
+            display: inline-block;
+        }
+        span {
+            padding: 7px;
+            pointer-events: none;
+            position: absolute;
+            left: 0;
+            top: 0;
+            transition: 0.05s;
+            transition-timing-function: cubic-bezier(0.25, 0.1, 0.25, 1);
+            opacity: 0.7;
+        }
+        input[type="text"] {
+            padding: 7px;
+            width: 200px;
+            border-radius: 5px;
+            border: 1px solid lightgrey;
+        }
+        input:focus + span, input:not(:placeholder-shown) + span {
+            opacity: 1;
+            transform: scale(0.9) translateY(-85%) translateX(-10%);
+        }
+        .back {
+            border: none;
+            background-color: rgb(235, 235, 235);
+            padding: 4px;
+            margin: 0;
+        }
+        .back:hover {
+            background-color: lightgray;
+        }
+        .logout{
+            background-color:tomato
+        }
+        .logout:hover{
+            background-color: red;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        table {
+            border-collapse: collapse;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        
+        thead tr {
+            background-color: tomato;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        th,td {
+            padding: 2px 10px;
+        }
+        
+        tbody tr {
+            border-bottom: 1px solid #dddddd;
+            transition: background-color 0.2s;
+        }
+
+        tbody tr:nth-of-type(even) {
+            background-color: #f1f1f1;
+        }
+        
+        tbody tr:hover {
+            background-color: orange;
+            color: white;
+        }
+        
+        tbody tr:last-of-type {
+            border-bottom: 2px solid #009879;
+        }
+        button{
+            cursor: pointer;
+            font-size:1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            padding: 5px;
+            margin: auto;
+        }
+        .message {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            width: fit-content;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+    <script>
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' Bytes';
+            else if (bytes < 1048576) return (bytes / 1024).toFixed(2) + ' KB';
+            else if (bytes < 1073741824) return (bytes / 1048576).toFixed(2) + ' MB';
+            else return (bytes / 1073741824).toFixed(2) + ' GB';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            function filterTable() {
+                const searchTerm = document.getElementById('searchFiles').value.toLowerCase();
+                const usernameFilter = document.getElementById('usernameFilter').value;
+                const senderFilter = document.getElementById('senderFilter').value;
+                const rows = document.querySelector('.files-table tbody').getElementsByTagName('tr');
+                
+                // Skip the last row (total row)
+                for (let i = 0; i < rows.length - 1; i++) {
+                    const filename = rows[i].getElementsByTagName('td')[1].textContent.toLowerCase();
+                    const username = rows[i].getElementsByTagName('td')[2].textContent;
+                    const sender = rows[i].getElementsByTagName('td')[3].textContent;
+                    
+                    const matchesSearch = filename.includes(searchTerm);
+                    const matchesUsername = !usernameFilter || username === usernameFilter;
+                    const matchesSender = !senderFilter || sender === senderFilter;
+                    
+                    rows[i].style.display = (matchesSearch && matchesUsername && matchesSender) ? '' : 'none';
+                }
+            }
+
+            // Add event listeners
+            document.getElementById('searchFiles').addEventListener('input', filterTable);
+            document.getElementById('usernameFilter').addEventListener('change', filterTable);
+            document.getElementById('senderFilter').addEventListener('change', filterTable);
+
+            // Make usernames and senders clickable
+            document.querySelectorAll('.files-table tbody tr').forEach(row => {
+                const usernameCell = row.getElementsByTagName('td')[2];
+                const senderCell = row.getElementsByTagName('td')[3];
+
+                if (usernameCell && !row.classList.contains('total-row')) {
+                    usernameCell.style.cursor = 'pointer';
+                    usernameCell.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        document.getElementById('usernameFilter').value = usernameCell.textContent;
+                        filterTable();
+                    });
+                }
+
+                if (senderCell && !row.classList.contains('total-row')) {
+                    senderCell.style.cursor = 'pointer';
+                    senderCell.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        document.getElementById('senderFilter').value = senderCell.textContent;
+                        filterTable();
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <nav class="nav">
+        <button class="back" onclick="window.location.href='/'">⬅️ Back</button>
+        <h1 class="heading" onclick="window.location.href='/'">
+            <img class="logo" src="/static/icon.png" alt="logo">Share Up
+        </h1>
+        <div class="profile">
+            👨‍💼 Admin Dashboard
+            <button class="logout">
+                <a href="/" style="text-decoration: none; color: inherit;">Logout</a>
+            </button>
+        </div>
+    </nav>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="message {{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+<style>
+    .users{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 30px;
+    }
+    ul{
+        margin:3px 5px;
+    }
+    h3{
+        margin:0px 3px;
+    }
+</style>
+    
+
+
+
+<form action="/admin" method="POST">
+    <label>
+        <input type="text" id="keyword" name="keyword" required placeholder=" ">
+        <span>Enter Search Keyword</span>
+    </label>
+    <button type="submit">🔍 Search</button>
+</form>
+
+<div class="keyword">
+    {% if file_ids %}
+        <h3>Search Results:</h3>
+        <ul>
+            {% for file_id in file_ids %}
+                <li>File ID: {{ file_id }}</li>
+            {% endfor %}
+        </ul>
+    {% elif keyword is defined %}
+        <div class="message error">No searchable files exist for this keyword.</div>
+    {% endif %}
+</div>
+    
+
+    <div class="users">
+
+        <div>
+            <h3>Users Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user[0] }}</td>
+                        <td>{{ user[2] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+
+    <form action="/delete_user" method="POST">
+        <label>
+            <input type="text" id="username" name="username" required placeholder=" ">
+            <span>Enter Username</span>
+        </label>
+        <button type="submit">❌ Delete User</button>
+    </form>
+    
+    
+</div>
+    <div style="display: flex; justify-content: flex-start; align-items: center;">
+        <h3>Files Table</h3>
+        <input type="search" id="searchFiles" placeholder="Search by filename..." 
+               style="width:fit-content; margin-top:auto; padding: 5px; margin-left: 10px; border-radius: 5px; border: 1px solid #ddd;">
+        
+        <select id="usernameFilter" style="margin-left: 10px; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">
+            <option value="">All Recipients</option>
+            {% for username in files|map(attribute=2)|unique|sort %}
+                <option value="{{ username }}">{{ username }}</option>
+            {% endfor %}
+        </select>
+
+        <select id="senderFilter" style="margin-left: 10px; padding: 5px; border-radius: 5px; border: 1px solid #ddd;">
+            <option value="">All Senders</option>
+            {% for sender in files|map(attribute=3)|unique|sort %}
+                <option value="{{ sender }}">{{ sender }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <table class="files-table">
+        <thead>
+            <tr>
+                <th>File ID</th>
+                <th>Filename</th>
+                <th>Username</th>
+                <th>Sender</th>
+                <th>Upload Time</th>
+                <th>Size</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for file in files %}
+            <tr>
+                <td>{{ file[0] }}</td>
+                <td>{{ file[1] }}</td>
+                <td>{{ file[2] }}</td>
+                <td>{{ file[3] }}</td>
+                <td>{{ file[4].strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                <td><script>document.write(formatFileSize({{ file[5] }}));</script></td>
+                <td>
+                    <form action="/delete_file" method="POST" style="margin: 0; padding: 0; background: none;">
+                        <input type="hidden" name="file_id" value="{{ file[0] }}">
+                        <!-- <button type="submit" style="background: none; border: none; color: red; cursor: pointer; font-size: 1.2rem;">❌</button> -->
+                        <button type="submit" style="padding:none;margin:none;font-size:0.85em">❌</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            <tr style="font-weight: bold; background-color: #f0f0f0;"></tr>
+                <td colspan="5" style="text-align: right;font-weight:bold;">Total Storage Used:</td>
+                <td style='font-weight:bold;'><script>
+                    let total = {{ files|sum(attribute='5') }};
+                    document.write(formatFileSize(total));
+                </script></td>
+            </tr>
+        </tbody>
+    </table>
+<!-- 
+    <h3>File Index Table</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>File ID</th>
+                <th>Keyword Hash</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for index in file_index %}
+            <tr>
+                <td>{{ index[1] }}</td>
+                <td>{{ index[0] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+     -->
+     <!-- <p><strong>Total Storage Used: <script>document.write(formatFileSize({{ total_storage }}));</script></strong></p> -->
+</body>
+</html>

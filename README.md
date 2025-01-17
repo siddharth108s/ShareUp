@@ -9,7 +9,7 @@ The project implements multiple aspects of information security.
 
 ![Client_Dashboard](https://github.com/siddharth108s/ShareUp/blob/master/Client_Dashboard.png?raw=true)
 
-![Admin_Dashboard](https://github.com/siddharth108s/ShareUp/blob/master/Client_Dashboard.png?raw=true)
+![Admin_Dashboard](https://github.com/siddharth108s/ShareUp/blob/master/Admin_Dashboard.png?raw=true)
 
 # Usage
 - Use Python 3.10.11. Creating a virtual environment in recommended.
